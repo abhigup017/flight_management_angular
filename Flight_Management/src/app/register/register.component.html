@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card border-0">
+            <div class="card-body">
+                <h2>Register</h2>
+                <form [formGroup]="registerModel.formRegisterGroup">
+                    <div>
+                        <label class="form-label">First Name</label>
+                        <input [(ngModel)]="registerModel.firstName" formControlName="firstNameControl" maxlength="20" class="form-control"
+                            type="text" />
+                        <p style="color:red" [hidden]="!(hasError('required','firstNameControl'))">First Name is mandatory</p>
+                    </div>
+                    <div>
+                        <label class="form-label">Last Name</label>
+                        <input [(ngModel)]="registerModel.lastName" type="text" formControlName="lastNameControl" maxlength="20" class="form-control" />
+                        <p style="color:red" [hidden]="!(hasError('required','lastNameControl'))">Last Name is mandatory</p>
+                    </div>
+                    <div>
+                        <label class="form-label">Gender</label>
+                        <select [(ngModel)]="selectedGenderType" [ngModelOptions]="{standalone: true}" class="form-select">
+                            <option *ngFor="let gender of genderTypes" [ngValue]="gender">{{gender.value}}</option>
+                          </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Email-id</label>
+                        <input [(ngModel)]="registerModel.emailId" formControlName="emailIdControl" type="text" maxlength="30" class="form-control" />
+                        <p style="color:red" [hidden]="!(hasError('required','emailIdControl'))">Email-id is mandatory</p>
+                    </div>
+                    <div>
+                        <label class="form-label">User Name</label>
+                        <input [(ngModel)]="registerModel.userName" formControlName="userNameControl" type="text" maxlength="50" class="form-control" />
+                        <p style="color:red" [hidden]="!(hasError('required','userNameControl'))">User Name is mandatory</p>
+                    </div>
+                    <div>
+                        <label class="form-label">Password</label>
+                        <input [(ngModel)]="registerModel.password" formControlName="passwordControl" type="password" maxlength="50" class="form-control" />
+                        <p style="color:red" [hidden]="!(hasError('required','passwordControl'))">Password is mandatory</p>
+                    </div>
+                    <div>
+                        <label class="form-label">Confirm Password</label>
+                        <input [(ngModel)]="registerModel.confirmPassword" (ngModelChange)="PasswordMatches()" type="password" formControlName="confirmPasswordControl" maxlength="50" class="form-control" />
+                        <p style="color:red" [hidden]="!(hasError('required','confirmPasswordControl'))">Please re-enter the password to confirm</p>
+                        <p style="color:red" *ngIf="registerModel.password != '' && registerModel.confirmPassword != '' && registerModel.password != registerModel.confirmPassword">Password does not matches</p>
+                        <p style="color:rgb(61, 212, 31)" *ngIf="registerModel.password != '' && registerModel.confirmPassword != '' && registerModel.password == registerModel.confirmPassword">Password Matches</p>
+                    </div>
+                    <div class="py-4">
+                        <input type="submit" (click)="RegisterUser()" [disabled]="!(registerModel.formRegisterGroup.valid) || !isPasswordMatches" class="btn btn-success"
+                            value="Register"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+</div>
+
+
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal"
+    data-bs-target="#exampleModal">
+</button>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{modalHeader}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{modalText}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

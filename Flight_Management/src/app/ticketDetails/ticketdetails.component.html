@@ -1,0 +1,70 @@
+<div class = "row g-3 py-4">
+  <h2 style="text-align: center;">Booking History</h2>
+  <div class="col-md-6">
+      <label class="form-label">PNR Number</label>
+      <input [(ngModel)]="pnrNumber" maxlength="100" class="form-control" type="text" />
+      <p style="color: red;" [hidden]="pnrNumber != ''"> Please enter the PNR Number</p>
+  </div>
+  <div></div>
+  <div class="col-md-4">
+      <input type="submit" (click)="GetTicketHistory()" [disabled]="pnrNumber == ''" class="btn btn-success" value="Search Booking"/>
+  </div>
+  </div>
+
+  <div *ngIf="isShowNoResultFound">
+    <h1 style="text-align: center;">No Bookings found</h1>
+  </div>
+
+  <div class="py-4" *ngIf="ticketHistory.bookingId > 0">
+    <table class="table caption-top table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Booked On</th>
+                <th style="padding-left: 24px;">Airline Logo</th>
+                <th>Total Cost</th>
+                <th>No of seats</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><div style="width: 100px;" class="text-truncate py-4" title="{{ticketHistory.bookedOn | date}}">{{ticketHistory.bookedOn | date}}</div></td>
+                <td><img style="width: 122px;height: 78px;" src={{ticketHistory.airlineLogo}}></td>
+                <td><div style="width: 130px; padding-left: 2%;" class="text-truncate py-4" title ="{{ticketHistory.totalCost | number}}">{{ticketHistory.totalCost | number}}</div></td>
+                <td><div style="width: 130px; padding-left: 14%;" class="text-truncate py-4" title ="{{ticketHistory.noOfSeats}}">{{ticketHistory.noOfSeats}}</div></td>
+                <td><div class="py-4">
+                    <input type="button" class="btn btn-secondary" value="View Details" (click)="ViewTicketDetails()"/>
+                    </div>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+  </div>
+
+  <!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{modalHeader}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+     <label style="font-family: 'Courier New', Courier, monospace;" [innerText]="modalText"></label>  
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>

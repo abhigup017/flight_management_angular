@@ -1,0 +1,129 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" (click)="ToggleDisplay('AddSchedule')" style="cursor: pointer;">Add Schedule</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page"  style="cursor: pointer;">Search Schedule</a>
+          </li>
+        </ul>
+        <!-- <span class="navbar-text">
+          Navbar text with an inline element
+        </span> -->
+      </div>
+    </div>
+  </nav>
+
+  <div class="row g-3 py-4">
+    <h2 style="text-align: center;">Search for schedules</h2>
+      </div>
+
+<form class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">Airline</label>
+    <select [(ngModel)]="airlineSelected" [ngModelOptions]="{standalone: true}" class="form-select">
+      <option *ngFor="let airline of airlines" [ngValue]="airline">{{airline.value}}</option>
+    </select>
+  </div>
+  <div></div>
+  <div class="col-md-4">
+    <label class="form-label">Flight No</label>
+    <input type="text" [(ngModel)]="scheduleSearchRequest.flightNumber" name="flightNumber" class="form-control">
+    <!-- <p style="color:red" [hidden]="!(HasError('required','flightNumberControl'))">Flight No is required</p> formControlName="flightNumberControl" -->
+  </div>
+  <div></div>
+  <div class="col-md-4">
+    <label  class="form-label">Instrument Used</label>
+    <select [(ngModel)]="instrumentTypeSelected" [ngModelOptions]="{standalone: true}" class="form-select">
+      <option *ngFor="let instrument of instrumentTypes" [ngValue]="instrument">{{instrument.value}}</option>
+    </select>
+  </div>
+  <div></div>
+    <div class="col-md-6">
+      <label class="form-label">Source</label>
+      <select [(ngModel)]="sourceLocationSelected" [ngModelOptions]="{standalone: true}" class="form-select">
+        <option *ngFor="let location of locations" [ngValue]="location">{{location.value}}</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Destination</label>
+      <select [(ngModel)]="destinationLocationSelected" [ngModelOptions]="{standalone: true}" class="form-select">
+        <option *ngFor="let location of locations" [ngValue]="location">{{location.value}}</option>
+      </select>
+    </div>
+    <div></div>
+    <div class="col-md-2">
+      <label class="form-label">Schedule date</label>
+      <input type="date" name="scheduleDate" [(ngModel)]="scheduleSearchRequest.scheduleDate" class="form-control">
+    </div>
+    <div></div>
+    <div class="col-md-2">
+      <button type="submit" (click)="SearchSchedule()" class="btn btn-success" >{{"Search Schedule"}}</button>
+  </div>
+</form>
+
+<div class="py-4"></div>
+  <div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+  </div>
+
+  <div *ngIf="showNoResultsFound">
+    <h1 style="text-align: center;">No Schedules found</h1>
+  </div>
+
+  <div *ngIf="scheduleResults.length > 0">
+<h1 style="text-align: center;">Search Results</h1>
+
+<div class="table-wrapper">
+<table style="height: 1000px;overflow: auto;" class="table caption-top table-dark table-striped table-hover">
+  <thead>
+      <tr>
+          <th style="position: sticky;">Airline Logo</th>
+          <th>Source</th>
+          <th>Destination</th>
+          <th>Instrument Used</th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let schedule of scheduleResults">
+          <td><img style="width: 122px;height: 70px;" src={{schedule.airlineLogo}}></td>
+          <td><div style="width: 100px;" class="text-truncate py-4" title="{{schedule.sourceLocation}}">{{schedule.sourceLocation}}</div></td>
+          <td><div style="width: 130px;" class="text-truncate py-4" title ="{{schedule.destinationLocation}}">{{schedule.destinationLocation}}</div></td>
+          <td><div style="width: 130px;" class="text-truncate py-4" title ="{{schedule.instrumentType}}">{{schedule.instrumentType}}</div></td>
+          <td><div class="py-4"><input type="button" class="btn btn-info" (click)="DisplayScheduleDetails(schedule)" value="Schedule Details"/></div></td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</div>
+ 
+
+<!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{modalHeader}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+     <label style="font-family: 'Courier New', Courier, monospace;" [innerText]="modalText"></label>  
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
+

@@ -1,0 +1,74 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" (click)="ToggleDisplay('AddDiscount')" style="cursor: pointer;">Add Discount</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" style="cursor: pointer;">Manage Discount</a>
+          </li>
+        </ul>
+        <!-- <span class="navbar-text">
+          Navbar text with an inline element
+        </span> -->
+      </div>
+    </div>
+  </nav>
+
+  <div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+  </div>
+
+  <div class="py-4" *ngIf="discountList.length == 0">
+    <h1 style="text-align: center;">No Discount coupons found</h1>
+  </div>
+
+  <div class="py-4" *ngIf="discountList.length > 0">
+    <table class="table caption-top table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Discount Code</th>
+                <th>Discount Expiry Date</th>
+                <th>Discount Value(%)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let discount of discountList">
+                <td><div class="text-truncate py-4" title="{{discount.discountCode}}">{{discount.discountCode}}</div></td>
+                <td><div style="padding-left: 6%;" class="text-truncate py-4" title ="{{discount.discountExpiryDate | date}}">{{discount.discountExpiryDate | date}}</div></td>
+                <td><div style="padding-left: 12%;" class="text-truncate py-4" title ="{{discount.discountValue}}">{{discount.discountValue}}</div></td>
+                <td><div class="py-4">
+                    <input type="button" class="btn btn-danger" (click)="RemoveDiscountCoupon(discount)" value="Delete"></div>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{modalHeader}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      {{modalText}}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>

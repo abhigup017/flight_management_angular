@@ -1,0 +1,95 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" style="cursor: pointer;">Add Airline</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" (click)="ToggleDisplay('ManageAirline')" style="cursor: pointer;">Manage Airline</a>
+          </li>
+        </ul>
+        <!-- <span class="navbar-text">
+          Navbar text with an inline element
+        </span> -->
+      </div>
+    </div>
+  </nav>
+  <div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h2>Add Airline</h2>
+                    <form [formGroup]="AddAirlineRequest.formAirlineAddGroup">
+                    <div>
+                        <label class="form-label">Airline Name</label>
+                        <input  class="form-control" [(ngModel)]="AddAirlineRequest.airlineName" formControlName="airlineNameControl" type="text" maxlength="20"/>
+                        <p style="color:red" [hidden]="!(hasError('required','airlineNameControl'))">Airline Name is required</p>
+                    </div>
+                    <!-- <div>
+                        <label class="form-label">Airline Logo</label>
+                        <input [(ngModel)]="AddAirlineRequest.airlineLogo" formControlName="airlineLogoControl" class="form-control" type="text" maxlength="500"/>
+                        <p style="color:red" [hidden]="!(hasError('required','airlineLogoControl'))">Airline logo is required</p>
+                    </div> -->
+                    <div>
+                      <label class="form-label">Airline Logo</label>
+                      <input type="file" accept=".jpg,.jpeg,.bmp,.gif,.png,.tif,.gif" formControlName="airlineLogoControl" id="file" (change)="HandleFileInput($event.target)">
+                      <p style="color:red" [hidden]="!(hasError('required','airlineLogoControl'))">Airline logo is required</p>
+                    </div>
+    
+                    <div>
+                        <label class="form-label">Airline Contact</label>
+                        <input [(ngModel)]="AddAirlineRequest.airlineContact" formControlName="airlineContactControl" class="form-control" type="text" maxlength="20">
+                        <p style="color:red" [hidden]="!(hasError('required','airlineContactControl'))">Airline contact is required</p>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Airline Address</label>
+                        <input [(ngModel)]="AddAirlineRequest.airlineAddress" formControlName="airlineAddressControl" class="form-control" type="text" maxlength="100">
+                        <p style="color:red" [hidden]="!(hasError('required','airlineAddressControl'))">Airline Address is required</p>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Airline Description</label>
+                        <input [(ngModel)]="AddAirlineRequest.airlineDescription" [ngModelOptions]="{standalone: true}" class="form-control" type="text" maxlength="500">
+                    </div>
+    
+                    
+                    <div class="py-4">
+                        <button type="submit" class="btn btn-success" [disabled]="!(AddAirlineRequest.formAirlineAddGroup.valid)" (click)="AddAirline()">{{"Add Airline"}}</button>
+                    </div>
+                  </form>
+                    <div *ngIf="showSpinner" class="loader" role="status">
+                        <span class="visually-hidden">Loading</span>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{modalHeader}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{modalText}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>

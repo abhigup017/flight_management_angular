@@ -1,0 +1,272 @@
+<div class="row g-3 py-4">
+    <h2 style="text-align: center;">Book Flight</h2>
+      </div>
+            
+      <form *ngIf="!isBookingProcessing" class="row g-3">
+          
+            <div class="col-md-4">
+                <input class="form-check-input" [checked]="true" (change)="OnRadioOptionChange('onwardTrip')" type="radio" id="rdoOneWay" name="roundTrip">
+  <label class="form-check-label" for="rdoOneWay">One Way</label>
+              </div>
+              <div class="col-md-4">
+                <input class="form-check-input" type="radio" (change)="OnRadioOptionChange('roundTrip')" id="rdoRoundTrip" name="roundTrip">
+  <label class="form-check-label" for="rdoRoundTrip">Round Trip</label>
+              </div>
+            <div></div>
+              <div class="col-md-6">
+                  
+                <label class="form-label">From</label>
+                <select [(ngModel)]="sourceLocationSelected" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option *ngFor="let location of locations" [ngValue]="location">{{location.value}}</option>
+                </select>
+            
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">To</label>
+                <select [(ngModel)]="destinationLocationSelected" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option *ngFor="let location of locations" [ngValue]="location">{{location.value}}</option>
+                </select>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label"><b>Onward Journey</b></label>
+                    <input type="datetime-local"  min="{{today}}" [(ngModel)]="flightSearchRequest.onwardTripRequest.travelDateTime" [ngModelOptions]="{standalone: true}" class="form-control">
+                    <!-- <p style="color:red" [hidden]="!(HasError('required','startDateControl'))">Start date is required</p> -->
+                  </div>
+                  <div>
+                    <input [ngModelOptions]="{standalone: true}" [(ngModel)]="flightSearchRequest.onwardTripRequest.isTimeBasedSearch" class="form-check-input" type="checkbox" id="onwardTimeSearch">
+      <label class="form-check-label" for="onwardTimeSearch">Time search</label>
+                  </div>
+                </div>
+            
+            <div class="col-md-6" *ngIf="isRoundTripSelected">
+                <div class="col-md-4">
+                    <label class="form-label"><b>Return Journey</b></label>
+                    <input type="datetime-local"  min="{{today}}" [(ngModel)]="flightSearchRequest.roundTripRequest.travelDateTime" [ngModelOptions]="{standalone: true}" class="form-control">
+                    <!-- <p style="color:red" [hidden]="!(HasError('required','endDateControl'))">End date is required</p> -->
+                  </div>
+                  <div>
+                    <input [ngModelOptions]="{standalone: true}" [(ngModel)]="flightSearchRequest.roundTripRequest.isTimeBasedSearch" class="form-check-input" type="checkbox" id="roundTimeSearch">
+      <label class="form-check-label" for="roundTimeSearch">Time search</label>
+                  </div>
+                </div>
+
+                <div></div>
+                <div>
+                    <button type="submit" class="btn btn-success" (click)="SearchFlights()" >{{"Search Flights"}}</button>
+                </div>
+</form>
+
+<div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+</div>
+
+<!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal"
+    data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{modalHeader}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{modalText}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!isBookingProcessing" class="row g-3">
+    <div class="py-4 col-md-6" *ngIf="isSearchClicked && flightSearchResults.onwardTripResults.length == 0">
+        <h1>No Flights found</h1>
+    </div>
+<div class="col-md-6 py-4" *ngIf="flightSearchResults.onwardTripResults.length > 0">
+    <h1 style="text-align: center;">Onward trip Flight Results</h1>
+    <table class="table caption-top table-dark">
+        <thead>
+            <tr>
+                <th>Airline Logo</th>
+                <th>Flight Number</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr (click)="OnOnwardResultSelect(result)" *ngFor="let result of flightSearchResults.onwardTripResults" [ngClass]="{'table-active': result.isSelected}">
+                <td><img style="width: 122px;height: 70px;" src={{result.airlineLogo}}></td>
+                <td><div style="padding-left: 6%;" class="text-truncate py-4" title ="{{result.flightNumber}}">{{result.flightNumber}}</div></td>
+                <td><div class="text-truncate py-4" title ="Rs {{result.cost | number}}">Rs {{result.cost | number}}</div></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="col-md-6">
+        <label  class="form-label">Vacant Business seats: {{vacantBusinessOnward}}</label>
+        <label  class="form-label">Vacant Regular seats: {{vacantRegularOnward}}</label>
+    </div>
+
+    <div class="col-md-4">
+        <label  class="form-label">Meal Preference</label>
+        <select [(ngModel)]="mealTypeSelectedOnward" [ngModelOptions]="{standalone: true}" class="form-select">
+          <option *ngFor="let meal of mealTypes" [ngValue]="meal">{{meal.value}}</option>
+        </select>
+      </div>
+</div>
+
+<div class="py-4 col-md-6" *ngIf="isSearchClicked && isRoundTripSelected && flightSearchResults.roundTripResults.length == 0">
+    <h1>No Flights found</h1>
+</div>
+<div class="col-md-6 py-4" *ngIf="flightSearchResults.roundTripResults.length > 0 && isRoundTripSelected">
+    <h1 style="text-align: center;">Round trip Flight Results</h1>
+    <table class="table caption-top table-dark">
+        <thead>
+            <tr>
+                <th>Airline Logo</th>
+                <th>Flight Number</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let result of flightSearchResults.roundTripResults" (click)="OnRoundResultSelect(result)" [ngClass]="{'table-active': result.isSelected}">
+                <td><img style="width: 122px;height: 70px;" src={{result.airlineLogo}}></td>
+                <td><div style="padding-left: 6%;" class="text-truncate py-4" title ="{{result.flightNumber}}">{{result.flightNumber}}</div></td>
+                <td><div class="text-truncate py-4" title ="Rs {{result.cost | number}}">Rs {{result.cost | number}}</div></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="col-md-6">
+        <label  class="form-label">Vacant Business seats: {{vacantBusinessRound}}</label>
+        <label  class="form-label">Vacant Regular seats: {{vacantRegularRound}}</label>
+    </div>
+
+    <div class="col-md-4">
+        <label  class="form-label">Meal Preference</label>
+        <select [(ngModel)]="mealTypeSelectedRound" [ngModelOptions]="{standalone: true}" class="form-select">
+          <option *ngFor="let meal of mealTypes" [ngValue]="meal">{{meal.value}}</option>
+        </select>
+      </div>
+</div>
+</div>
+
+<div *ngIf="(flightSearchResults.onwardTripResults.length > 0 || flightSearchResults.roundTripResults.length > 0) && !isBookingProcessing" class="row g-3">
+    <div class="col-md-3">
+        <label class="form-label">No of passengers (Max 5)</label>
+        <input type="number" max="5" (change)="OnPassengerCountChange()"  [(ngModel)]="noOfPassengers" class="form-control">
+        <!-- <p style="color:red" [hidden]="!(HasError('required','flightNumberControl'))">Flight No is required</p> -->
+      </div>
+      <div></div>
+      <div class="col-md-12">
+          <div class="col-md-4">
+            <label class="form-label"><b>Total Price: Rs </b></label><span> <b>{{ totalBookingCost | number}}</b></span>
+          </div>
+          <div class=col-md-4>
+            <button type="submit" class="btn btn-success" (click)="ContinueBooking()" >{{"Continue Booking"}}</button>
+          </div>
+        
+      </div>
+      
+</div>
+
+<div *ngIf="isBookingProcessing" class="row g-3 py-4">
+    
+    <div class="col-md-2">
+        <label class="form-label">Discount Code</label>
+        
+        <input [disabled]="isDiscountApplied" type="text" maxlength="50" [(ngModel)]="discountCode" class="form-control">
+        </div>
+        <div style="padding-top: 31px;" class="col-md-2">
+        <button type="submit" class="btn btn-success" (click)="ApplyDiscount()" [disabled]="isDiscountApplied" >{{"Apply"}}</button>
+    </div>
+<div></div>
+    <div class="col-md-6">
+        <label class="form-label">Customer Name</label>
+        <input type="text" [(ngModel)]="customerName"  class="form-control">
+        <!-- <p style="color:red" [hidden]="!(HasError('required','flightNumberControl'))">Flight No is required</p> -->
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Customer Email</label>
+        <input type="text" [(ngModel)]="customerEmailId" class="form-control">
+        <!-- <p style="color:red" [hidden]="!(HasError('required','flightNumberControl'))">Flight No is required</p> -->
+      </div>
+        
+    <div></div>
+        <!-- <p style="color:red" [hidden]="!(HasError('required','flightNumberControl'))">Flight No is required</p> -->
+      <h1 style="text-align: center;"><b>Booking Passenger details</b></h1>
+        <div class="col-md-12">
+            <table class="table caption-top table-dark table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th *ngIf="isOnwardFlightSelected">Seat no(onward)</th>
+                        <th *ngIf="isRoundFlightSelected">seat no(return)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let passenger of bookingPassengers">
+                        <td style="width:18%"><input  class="form-control" [(ngModel)]="bookingPassengers[passenger.index].passengerName" type="text" maxlength="50"/></td>
+                        <!-- <td><div style="padding-left: 6%;" class="text-truncate py-4" title ="{{result.flightNumber}}">{{result.flightNumber}}</div></td>
+                        <td><div class="text-truncate py-4" title ="Rs {{result.cost | number}}">Rs {{result.cost | number}}</div></td> -->
+                        <td style="width:16%">
+                            <select [(ngModel)]="bookingPassengers[passenger.index].genderId" class="form-select">
+                                <option *ngFor="let gender of genderTypes" [ngValue]="gender.id">{{gender.value}}</option>
+                              </select>
+                        </td>
+                        <td><input type="number" min="0" max="99"   [(ngModel)]="bookingPassengers[passenger.index].passengerAge" class="form-control"></td>
+                        <td *ngIf="isOnwardFlightSelected"><select [(ngModel)]="bookingPassengers[passenger.index].seatnoOnward" class="form-select">
+                            <option *ngFor="let seat of dummySeatNumbers" [ngValue]="seat.seatNo">{{seat.seatNo}}</option>
+                          </select></td>
+                        <td *ngIf="isRoundFlightSelected"><select [(ngModel)]="bookingPassengers[passenger.index].seatnoRound" class="form-select">
+                            <option *ngFor="let seat of dummySeatNumbers" [ngValue]="seat.seatNo">{{seat.seatNo}}</option>
+                          </select></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row g-3">
+            <div *ngIf="isOnwardFlightSelected" class="col-md-3">
+                <input class="form-check-input" (change)="OnRadioOnwardChange('Business')" [checked]="true" type="radio" id="rdoBusinessOnward" name="seatOnward">
+  <label class="form-check-label" for="rdoBusinessOnward">Business seat(Onward)</label>
+              </div>
+              <div *ngIf="isOnwardFlightSelected" class="col-md-3">
+                <input class="form-check-input" (change)="OnRadioOnwardChange('Regular')" type="radio" id="rdoRegularOnward" name="seatOnward">
+  <label class="form-check-label" for="rdoRegularOnward">Regular seat(Onward)</label>
+              </div>
+              <div *ngIf="isRoundFlightSelected" class="col-md-3">
+                <input class="form-check-input" (change)="OnRadioReturnChange('Business')" [checked]="true" type="radio" id="rdoBusinessRound" name="seatRound">
+  <label class="form-check-label" for="rdoBusinessRound">Business seat(Return)</label>
+              </div>
+              <div *ngIf="isRoundFlightSelected" class="col-md-3">
+                <input class="form-check-input" (change)="OnRadioReturnChange('Regular')" type="radio" id="rdoRegularRound" name="seatRound">
+  <label class="form-check-label" for="rdoRegularRound">Regular seat(Return)</label>
+              </div>
+
+              <div *ngIf="isOnwardFlightSelected" class="col-md-6">
+                <label  class="form-label">Vacant Business seats: {{vacantBusinessOnward}}</label>
+                <label style="padding-left: 28px"  class="form-label">Vacant Regular seats: {{vacantRegularOnward}}</label>
+            </div>
+            <div *ngIf="isRoundFlightSelected" class="col-md-6">
+                <label  class="form-label">Vacant Business seats: {{vacantBusinessRound}}</label>
+                <label style="padding-left: 28px"  class="form-label">Vacant Regular seats: {{vacantRegularRound}}</label>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-4">
+                  <label class="form-label"><b>Total Price: Rs </b></label><span> <b>{{ totalBookingCost | number}}</b></span>
+                </div>
+    </div>
+    
+    <div>
+        <button class="col-md-12" type="submit" (click)="CheckOutBooking()" class="btn btn-success"  >{{"Check Out"}}</button>
+    </div>
+</div>
+

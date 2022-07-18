@@ -1,0 +1,79 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" style="cursor: pointer;">Add Discount</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" (click)="ToggleDisplay('ManageDiscount')" style="cursor: pointer;">Manage Discount</a>
+          </li>
+        </ul>
+        <!-- <span class="navbar-text">
+          Navbar text with an inline element
+        </span> -->
+      </div>
+    </div>
+  </nav>
+
+
+  <div>
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h2>Add Discount</h2>
+                    <form [formGroup]="addDiscountRequest.formAddDiscountGroup">
+                    <div>
+                        <label class="form-label">Discount Code</label>
+                        <input  class="form-control" [(ngModel)]="addDiscountRequest.discountCode" formControlName="discountCodeControl" type="text" maxlength="50"/>
+                        <p style="color:red" [hidden]="!(HasError('required','discountCodeControl'))">Discount code is required</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Discount Expiry Date</label>
+                        <input type="date" formControlName="discountExpiryDateControl" min="{{today}}" [(ngModel)]="addDiscountRequest.discountExpiryDate" class="form-control">
+                        <p style="color:red" [hidden]="!(HasError('required','discountExpiryDateControl'))">Discount Expiry date is required</p>
+                      </div>
+    
+                    <div>
+                        <label class="form-label">Discount Value</label>
+                        <input [(ngModel)]="addDiscountRequest.discountValue" formControlName="discountValueControl" class="form-control" type="text" maxlength="2">
+                        <p style="color:red" [hidden]="!(HasError('required','discountValueControl'))">Discount value is required</p>
+                        <p style="color:red" [hidden]="!(HasError('pattern','discountValueControl'))">Please enter numeric values only</p>
+                    </div>
+
+                    <div class="py-4">
+                        <button type="submit" class="btn btn-success" [disabled]="!(addDiscountRequest.formAddDiscountGroup.valid)" (click)="AddDiscount()">{{"Add Discount"}}</button>
+                    </div>
+                  </form>
+
+  <div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+  </div>
+
+
+<!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{modalHeader}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      {{modalText}}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>

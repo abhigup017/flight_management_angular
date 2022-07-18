@@ -1,0 +1,81 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" (click)="ToggleDisplay('AddAirline')" style="cursor: pointer;">Add Airline</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" style="cursor: pointer;">Manage Airline</a>
+          </li>
+        </ul>
+        <!-- <span class="navbar-text">
+          Navbar text with an inline element
+        </span> -->
+      </div>
+    </div>
+  </nav>
+
+  <div class="py-4" *ngIf="AirlinesList.length == 0">
+    <h1 style="text-align: center;">No Airlines found</h1>
+  </div>
+
+  <div class="py-4" *ngIf="AirlinesList.length > 0">
+    <table class="table caption-top table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Airline Logo</th>
+                <th>Airline Name</th>
+                <th>Airline Contact</th>
+                <th>Airline Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let airline of AirlinesList">
+                <td><img style="width: 122px;height: 70px;" src={{airline.airlineLogo}}></td>
+                <td><div style="width: 100px;" class="text-truncate py-4" title="{{airline.airlineName}}">{{airline.airlineName}}</div></td>
+                <td><div style="width: 130px;" class="text-truncate py-4" title ="{{airline.airlineContact}}">{{airline.airlineContact}}</div></td>
+                <td><div style="width: 130px;" class="text-truncate py-4" title ="{{airline.airlineDescription}}">{{airline.airlineDescription}}</div></td>
+                <td><div class="py-4">
+                    <span><input type="button" class="btn btn-secondary" value="Block"
+                        *ngIf="!airline.isBlocked" (click)="BlockAirline(airline)"/></span>
+                        <span><input type="button" class="btn btn-success"
+                        value="Unblock" (click)="UnBlockAirline(airline)" *ngIf="airline.isBlocked" /></span>
+                    <span style="padding-left: 4px;"><input type="button" class="btn btn-danger" (click)="RemoveAirline(airline)" value="Delete"></span></div>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div *ngIf="showSpinner" class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+  </div>
+
+
+<!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{modalHeader}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      {{modalText}}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>

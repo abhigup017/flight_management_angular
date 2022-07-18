@@ -1,0 +1,72 @@
+<div class = "row g-3 py-4">
+<h2 style="text-align: center;">Manage Bookings</h2>
+<div class="col-md-6">
+    <label class="form-label">Email-Id</label>
+    <input [(ngModel)]="emailId" maxlength="30" class="form-control" type="text" />
+    <p style="color: red;" [hidden]="emailId != ''"> Please enter the Email-id</p>
+</div>
+<div></div>
+<div class="col-md-4">
+    <input type="submit" (click)="GetBookingHistory()" [disabled]="emailId == ''" class="btn btn-success" value="Search Bookings"/>
+</div>
+</div>
+
+<div *ngIf="isShowNoResultFound">
+    <h1 style="text-align: center;">No Bookings found</h1>
+  </div>
+
+  <div class="py-4" *ngIf="bookingHistory.length > 0">
+    <table class="table caption-top table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Airline Logo</th>
+                <th>Total Cost</th>
+                <th>Travel Date</th>
+                <th>PNR Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let booking of bookingHistory">
+                <td><img style="width: 122px;height: 70px;" src={{booking.airlineLogo}}></td>
+                <td><div style="width: 100px;" class="text-truncate py-4" title="{{booking.totalCost | number}}">{{booking.totalCost | number}}</div></td>
+                <td><div style="width: 130px;" class="text-truncate py-4" title ="{{booking.travellingDate | date}}">{{booking.travellingDate | date}}</div></td>
+                <td><div style="width: 130px;" class="text-truncate py-4" title ="{{booking.pnrNumber}}">{{booking.pnrNumber}}</div></td>
+                <td><div class="py-4">
+                    <span><input type="button" class="btn btn-secondary" value="View & Download" (click)="GenerateBookingPdf(booking)"
+                        /></span>
+                        <span style="padding-left: 4px;"><input type="button" class="btn btn-danger"
+                        value="Cancel" *ngIf="booking.isCancellationAllowed" (click)="CancelBooking(booking.pnrNumber)" /></span>
+                    </div>
+                    </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div *ngIf="showSpinner"  class="loader" role="status">
+    <span class="visually-hidden">Loading</span>
+  </div>
+
+
+<!-- Button trigger modal -->
+<button id="btnLaunchModal" type="button" style="visibility: hidden;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{modalHeader}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      {{modalText}}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
